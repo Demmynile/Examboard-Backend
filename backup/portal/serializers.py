@@ -1,5 +1,5 @@
 
-from .models import Portals,BECE
+from .models import Portals
 from rest_framework import serializers
 
 
@@ -7,12 +7,6 @@ class PortalSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Portals
-        fields = '__all__'
-
-class BeceSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = BECE
         fields = '__all__'
 
 # class ThingSerializer(serializers.ModelSerializer):

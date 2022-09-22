@@ -100,7 +100,7 @@ WSGI_APPLICATION = 'payportal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'payport',
+        'NAME': 'examboard',
         'HOST': 'localhost',
         'PORT': '3306',
         'USER': 'root',
