@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from portal.views import PortaltViewSet
+from portal.api.bece_views import BeceViewSet,getBeceInfo,PayBece
 from payment.views import PaymentViewSet
 
 from rest_framework.routers import DefaultRouter
@@ -25,9 +26,12 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 router.register(r'portals', PortaltViewSet)
 router.register(r'payment', PaymentViewSet)
+router.register(r'bece', BeceViewSet) # upload bece data
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
+    path('beceid/<str:pk>/', getBeceInfo, name ="getBeceinformation"),# getbeceinfo
+    path('becepayment/<str:pk>/', PayBece, name ="getBeceinformation"),# pay for bece exams form
 ]
