@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from portal.views import PortaltViewSet
-from portal.api.bece_views import BeceViewSet,getBeceInfo,PayBece
+from portal.api.bece_views import BeceViewSet,getBeceInfo,PayBece,Jss3ViewSet,getJss3Info,PayJss
 from payment.views import PaymentViewSet
 
 from rest_framework.routers import DefaultRouter
@@ -27,6 +27,7 @@ router = DefaultRouter()
 router.register(r'portals', PortaltViewSet)
 router.register(r'payment', PaymentViewSet)
 router.register(r'bece', BeceViewSet) # upload bece data
+router.register(r'jss', Jss3ViewSet) # upload jss data
 
 
 urlpatterns = [
@@ -34,4 +35,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('beceid/<str:pk>/', getBeceInfo, name ="getBeceinformation"),# getbeceinfo
     path('becepayment/<str:pk>/', PayBece, name ="getBeceinformation"),# pay for bece exams form
+    path('jssid/<str:pk>/', getJss3Info, name ="getJss3information"),# getjssinfo
+    path('jsspayment/<str:pk>/', PayJss, name ="getBeceinformation"),# pay for jss exams form
 ]
