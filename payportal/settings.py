@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 
 import django
+ALLOWED_HOSTS = ['laptop-288nukat']
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -100,11 +101,11 @@ WSGI_APPLICATION = 'payportal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'payport',
+        'NAME': 'examboard',
         'HOST': 'localhost',
         'PORT': '3306',
-        'USER': 'root',
-        'PASSWORD': 'Harbeedeymee_123',
+        'USER': 'springstudent',
+        'PASSWORD': 'springstudent',
 
     }
 }
@@ -141,12 +142,12 @@ USE_I18N = True
 
 USE_TZ = True
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'balogun80@gmail.com'
-EMAIL_HOST_PASSWORD = 'harbeedeymee_1234'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'balogun80@gmail.com'
+# EMAIL_HOST_PASSWORD = 'harbeedeymee_1234'
 
 
 # EMAIL_HOST = 'smtp.mailtrap.io'
@@ -164,3 +165,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER ='apikey' # this is exactly the value 'apikey'
+EMAIL_HOST_PASSWORD = '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'
+EMAIL_PORT = 587
+
+EMAIL_USE_TLS = True
