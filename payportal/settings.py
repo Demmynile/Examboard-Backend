@@ -101,11 +101,11 @@ WSGI_APPLICATION = 'payportal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'examboard',
+        'NAME': 'examboardd',
         'HOST': 'localhost',
         'PORT': '3306',
-        'USER': 'springstudent',
-        'PASSWORD': 'springstudent',
+        'USER': 'root',
+        'PASSWORD': 'Harbeedeymee_123',
 
     }
 }
@@ -168,7 +168,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER ='apikey' # this is exactly the value 'apikey'
-EMAIL_HOST_PASSWORD = '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'
+EMAIL_HOST_PASSWORD = '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'
 EMAIL_PORT = 587
 
 EMAIL_USE_TLS = True
