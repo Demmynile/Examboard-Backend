@@ -1,13 +1,13 @@
-from .views import PaymentView
-from django.urls import path, include
+# from .views import PaymentView
+# from django.urls import path, include
 
-from rest_framework.routers import DefaultRouter
+# from rest_framework.routers import DefaultRouter
 
-router = DefaultRouter()
-router.register(r'payment', PaymentView)
+# router = DefaultRouter()
+# router.register(r'payment', PaymentView)
 
 
-urlpatterns = [
+# urlpatterns = [
 
-    path('', include(router.urls)),
-]
+#     path('', include(router.urls)),
+# ]

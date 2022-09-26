@@ -20,7 +20,7 @@ class BeceViewSet(viewsets.ModelViewSet):
 
     queryset = BECE.objects.all()
     serializer_class = BeceSerializer
-    lookup_field = 'transactionRef'
+    lookup_field = 'trnsref'
 
     @action(detail=False, methods=["POST"])
     def Upload(self, request):
@@ -56,7 +56,7 @@ class BeceViewSet(viewsets.ModelViewSet):
         #     transactionRef = "LAGEDU" + uty
         bulk_list.append(
                 BECE(ClosingDate=ClosingDate, StartingDate=StartingDate, SchoolTypeId =SchoolTypeId , RequestId=RequestId, InvoiceNumber=InvoiceNumber, SchoolName=SchoolName , SchoolType=SchoolType, 
-                 quota = quota , uniquecode=uniquecode, LgaId=LgaId,  ExamCost=  ExamCost, SchoolId = SchoolId  ,  NumberOfCandidates = NumberOfCandidates ))
+                 quota = quota , uniquecode=uniquecode, LgaId=LgaId,  ExamCost=ExamCost, SchoolId = SchoolId  ,  NumberOfCandidates = NumberOfCandidates ))
 
             # email_body = examName + "-" + pinNo
             # data = {"email_body": email_body, "to_email": email,

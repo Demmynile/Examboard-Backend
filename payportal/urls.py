@@ -19,12 +19,14 @@ from django.urls import path, include
 from rest_framework import routers
 from portal.views import PortaltViewSet
 from payment.views import PaymentViewSet
+from portal.views import BeceViewSet
 
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r'portals', PortaltViewSet)
 router.register(r'payment', PaymentViewSet)
+router.register(r'bece' ,  BeceViewSet)
 
 
 urlpatterns = [
