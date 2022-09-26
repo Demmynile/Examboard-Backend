@@ -12,6 +12,10 @@ from django.db import transaction
 from rest_framework.decorators import action
 from django.core import serializers
 import random
+from django.utils.dateparse import parse_date
+from portal.models import BECE
+from django.core import serializers as core_serializers
+from portal.serializers import BeceSerializer
 
 import uuid
 from django.db import transaction
@@ -69,26 +73,81 @@ class PortaltViewSets(viewsets.ModelViewSet):
                     portal_bulk_update_list, ['pinum'])
                 return HttpResponse(pinx, content_type='application/json')
 
-    @action(detail=False, methods=["PUT"])
-    def generate_pin(self, request):
-        records = []
-        # # generatedpin=
-        # # pinx=request.data.get('id')
-        # # pinum = generatedpin
-        # for record , value in Portals.objects.all():
-        #   value = "LAG"+ uuid.uuid4().hex.upper()
-        #   port = Portals.objects.get(id=record)
-        # #   port=int(request.data.get('id'))
-        #   port.pinum=value
-        #   records.append(port)
-        # # query  = Payment.objects.bulk_create(bulk_list)
-        # # result = serializers.serialize('json', query)
-        # query = Portals.objects.bulk_update(records, ['pinum'])
-        porty = Portals.objects.all()
-        for portals in porty:
-            portals.pinum = "LAG" + uuid.uuid4().hex.upper()
-            query = Portals.objects.bulk_update(porty,  ['pinum'])
-            return HttpResponse(query, content_type='application/json')
+    # @action(detail=False, methods=["PUT"])
+    # def generate_pin(self, request):
+    #     records = []
+    #     # # generatedpin=
+    #     # # pinx=request.data.get('id')
+    #     # # pinum = generatedpin
+    #     # for record , value in Portals.objects.all():
+    #     #   value = "LAG"+ uuid.uuid4().hex.upper()
+    #     #   port = Portals.objects.get(id=record)
+    #     # #   port=int(request.data.get('id'))
+    #     #   port.pinum=value
+    #     #   records.append(port)
+    #     # # query  = Payment.objects.bulk_create(bulk_list)
+    #     # # result = serializers.serialize('json', query)
+    #     # query = Portals.objects.bulk_update(records, ['pinum'])
+    #     porty = Portals.objects.all()
+    #     for portals in porty:
+    #         portals.pinum = "LAG" + uuid.uuid4().hex.upper()
+    #         query = Portals.objects.bulk_update(porty,  ['pinum'])
+    #         return HttpResponse(query, content_type='application/json')
+
+
+class BeceViewSet(viewsets.ModelViewSet):
+	
+    queryset = BECE.objects.all()
+    serializer_class = BeceSerializer
+    lookup_field = 'trnsref'
+
+    @action(detail=False, methods=['POST'])
+    def Upload(self, request):
+        ClosingDate  = parse_date(request.data.get('ClosingDate'))
+        StartingDate = parse_date(request.data.get('StartingDate'))
+        SchoolTypeId  = request.data.get('SchoolTypeId')
+        RequestId = request.data.get('RequestId')
+        InvoiceNumber  = request.data.get('InvoiceNumber')
+        SchoolName = request.data.get('SchoolName')
+        SchoolType = request.data.get('SchoolType')
+        quota = request.data.get('quota')
+        ExamCost = request.data.get('ExamCost')
+        uniquecode = request.data.get('uniquecode')
+        LgaId = request.data.get('LgaId')
+        SchoolId = request.data.get('SchoolId')
+        # pinNo = (request.data.get('pinNo'))
+        NumberOfCandidates  = int(request.data.get('NumberOfCandidates'))
+        SchoolId = LgaId+''+SchoolTypeId +''+ SchoolId
+        ExamCost = NumberOfCandidates * 4
+        bulk_list = list()
+        x = uuid.uuid4().hex.upper()
+        b=0
+        genid=x[15:20]
+        uniquecode=genid
+        print(genid)
+        if SchoolType =='1':
+            uniquecode = genid
+            print(uniquecode)
+        elif SchoolType =='0':
+            uniquecode = b
+        # for _ in range(bulknumber):
+        #     pinNo = "LAG" + uuid.uuid4().hex.upper()
+        #     transactionRef = "LAGEDU" + uty
+        bulk_list.append(
+                BECE(ClosingDate=ClosingDate, StartingDate=StartingDate, SchoolTypeId =SchoolTypeId , RequestId=RequestId, InvoiceNumber=InvoiceNumber, SchoolName=SchoolName , SchoolType=SchoolType, 
+                 quota = quota , uniquecode=uniquecode, LgaId=LgaId,  ExamCost=ExamCost, SchoolId = SchoolId  ,  NumberOfCandidates = NumberOfCandidates ))
+
+            # email_body = examName + "-" + pinNo
+            # data = {"email_body": email_body, "to_email": email,
+            #         "email_subject": "Acquisition of the Invoice Number"}
+
+            # # send the email
+            # Util.send_email(data)
+
+        query = BECE.objects.bulk_create(bulk_list)
+        result = core_serializers.serialize('json', query)
+        # result = serializers.serialize('json', query)
+        return HttpResponse(result, content_type='application/json')
 
     # def partial_update(self, request, *args, **kwargs):
     #   serializer = self.get_serializer(data=request.data, many=isinstance(request.data,list))
