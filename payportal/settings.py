@@ -101,7 +101,7 @@ WSGI_APPLICATION = 'payportal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'examboardd',
+        'NAME': 'examboard',
         'HOST': 'localhost',
         'PORT': '3306',
         'USER': 'root',
@@ -166,12 +166,9 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-<<<<<<< HEAD
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER ='apikey' # this is exactly the value 'apikey'
 EMAIL_HOST_PASSWORD = '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'
 EMAIL_PORT = 587
 
 EMAIL_USE_TLS = True
-=======
->>>>>>> eefc9fadcad62d523a72a54700c565fee1aa7957

@@ -14,7 +14,7 @@ class BeceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BECE
-        fields = [ 'adminemail','SchoolTypeId','Payeremail','SchoolName','SchoolType','quota','uniquecode','LgaId','PayerName','quota2','LgaName']
+        fields = [ 'adminemail','SchoolTypeId','Payeremail','SchoolName','SchoolType','quota','uniquecode','LgaId','PayerName','quota2','LgaName' , 'pinum']
 class BeceSerializerd(serializers.ModelSerializer):
 
     class Meta:
