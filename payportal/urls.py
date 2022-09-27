@@ -20,7 +20,7 @@ from rest_framework import routers
 from portal.views import PortaltViewSet
 from portal.api.bece_views import BeceViewSet,getBeceInfo,PayBece,Jss3ViewSet,getJss3Info,PayJss,UpdatePayBece
 from payment.views import PaymentViewSet
-from portal.views import BeceViewSet
+# from portal.views import BeceViewSet
 
 from rest_framework.routers import DefaultRouter
 
@@ -28,6 +28,8 @@ router = DefaultRouter()
 router.register(r'portals', PortaltViewSet)
 router.register(r'payment', PaymentViewSet)
 router.register(r'bece' ,  BeceViewSet)
+router.register(r'bece', BeceViewSet) # upload bece data
+router.register(r'jss', Jss3ViewSet) # upload jss data
 router.register(r'bece', BeceViewSet) # upload bece data
 router.register(r'jss', Jss3ViewSet) # upload jss data
 
