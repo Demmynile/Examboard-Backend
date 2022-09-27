@@ -17,7 +17,40 @@ from .utils import Util
 # from django_filters import FilterSet , DateFromToRangeFilter
 # from computed_property import ComputedTextField
 
+class User(AbstractUser):
+    is_buyer = models.BooleanField(default=False, null=True, blank=True)
+    is_vendor = models.BooleanField(default=False, null=True, blank=True)
+    email = models.EmailField(max_length=254, unique=True, null=True, blank=True)
+    uuid = models.CharField(max_length=500, blank=True)
+    digiNumber = models.CharField(max_length=100, null=True, blank=True)
+    Vendaddress = models.CharField(max_length=500, null=True, blank=True)
+    shopName = models.CharField(max_length=500, null=True, blank=True)
+    first_name = models.CharField(max_length=100, null=True, blank=True)
+    last_name = models.CharField(max_length=100, null=True, blank=True)
+    Country = models.CharField(max_length=225, null=True, blank=True)
+    State = models.CharField(max_length=225, null=True, blank=True)
+    City = models.CharField(max_length=225, null=True, blank=True)
+    notify = models.IntegerField(null=True, blank=True, default=0)
+    phone = models.CharField(max_length=20, null=True, blank=True)
+    gender = models.CharField(max_length=10, null=True, blank=True)
+    last_login = models.DateTimeField(null=True)
+    is_verified = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
+
+    def _str_(self):
+        return f"{self.username}"
+    # def save(self,*args,**kwargs):
+    #    send_mail(
+    #     'Vendor Registration',
+    #     'Vendor Registration Successfull.',
+    #     'aakindele@sterlingtech.com.ng',
+    #     [self.email],
+    #     fail_silently=False,
+    #    )
+       
+    #    return super(User,self).save(*args,**kwargs)
 class Portals(models.Model):
 
     # is_technical = models.BooleanField(default=False, null = True, blank= True)
@@ -194,11 +227,7 @@ class BECE(models.Model):
 
         # super(Portals, self).save(*args, **kwargs) # Call the "real" save() method
         # return self.TotalPrice
-<<<<<<< HEAD
 class JSS3(models.Model):
-=======
-class BECE(models.Model):
->>>>>>> b4a175a51025b017191a6b6a76084c446322c96d
     EventsType = (
         ('0', 'PRIVATE'),
         ('1', 'PUBLIC')
@@ -209,20 +238,12 @@ class BECE(models.Model):
     Payerphone = models.CharField(max_length=100, null=True, blank=True)
     SchoolId= models.CharField(max_length=100, null=True, blank=True)
     SchoolTypeId = models.CharField(max_length=100, null=True, blank=True)
-<<<<<<< HEAD
     schoolIds = models.CharField(max_length=100, null=True, blank=True)
-=======
-    RequestId = models.CharField(max_length=100, null=True, blank=True)
->>>>>>> b4a175a51025b017191a6b6a76084c446322c96d
     InvoiceNumber = models.CharField(max_length=100, null=True, blank=True)
     SchoolName = models.CharField(max_length=100, null=True, blank=True)
     PayerName = models.CharField(max_length=100, null=True, blank=True)
     TotalPrice = models.IntegerField(null=True, blank=True)
-<<<<<<< HEAD
     NumberOfCandidates = models.IntegerField(null=True, blank=True,default=0)
-=======
-    NumberOfCandidates = models.IntegerField(null=True, blank=True)
->>>>>>> b4a175a51025b017191a6b6a76084c446322c96d
     SchoolName = models.CharField(max_length=200, null=True, blank=True)
     session_token = models.CharField(
     max_length=10, default=0, null=True, blank=True)
@@ -236,11 +257,7 @@ class BECE(models.Model):
     ExamCost =  models.CharField(max_length=500, null=True, blank=True)
     SchoolType = models.CharField(max_length=100, choices=EventsType, null=True, blank=True)
     Street = models.CharField(max_length=100, null=True, blank=True)
-<<<<<<< HEAD
     adminemail = models.CharField(max_length=500, null=True, blank=True)
-=======
-    TownCity = models.CharField(max_length=100, null=True, blank=True)
->>>>>>> b4a175a51025b017191a6b6a76084c446322c96d
     State = models.CharField(max_length=100, null=True, blank=True)
     currentOffice = models.CharField(max_length=100, null=True, blank=True)
     Mda = models.CharField(max_length=100, null=True, blank=True)
@@ -251,15 +268,9 @@ class BECE(models.Model):
     quota2 = models.CharField(max_length=100, null=True, blank=True)
     
  
-<<<<<<< HEAD
     def save(self, *args, **kwargs):
         self.updates()
-        return super(BECE,self).save(*args,**kwargs)
-=======
-    # def save(self, *args, **kwargs):
-    #     self.update()
-    #     return super(BECE,self).save(*args,**kwargs)
->>>>>>> b4a175a51025b017191a6b6a76084c446322c96d
+        return super(JSS3,self).save(*args,**kwargs)
 
     # def update(self):
     #     # self.TotalPrice= self.StudentNumber * 4
@@ -269,7 +280,6 @@ class BECE(models.Model):
         
     #     return super(BECE,self).save(*args,**kwargs)
 
-<<<<<<< HEAD
     def updates(self):
         # self.TotalPrice= self.StudentNumber * 4
         # self.SchoolId = self.LgaId+''+ self.SchoolId+''+self.SchoolTypeId
@@ -285,21 +295,6 @@ class BECE(models.Model):
             print(self.uniquecode)
         elif(self.SchoolType == '0'):
             self.uniquecode = b
-=======
-    # def update(self):
-    #     # self.TotalPrice= self.StudentNumber * 4
-    #     x = uuid.uuid4().hex.upper()
-    #     b=0
-    #     genid=x[15:20]
-    #     # uniquecode=genid
-    #     print(genid)
-    #     print(genid)
-    #     if(self.SchoolType == 'PUBLIC'):
-    #         self.uniquecode = genid
-    #         print(self.uniquecode)
-    #     elif(self.SchoolType == 'PRIVATE'):
-    #         self.uniquecode = b
->>>>>>> b4a175a51025b017191a6b6a76084c446322c96d
 
     # DisplayFields = ['id','ExamType','LedNumber','InvoiceNumber','SchoolName','StudentNumber','pricing']
 
@@ -318,8 +313,3 @@ class BECE(models.Model):
 
         # super(Portals, self).save(*args, **kwargs) # Call the "real" save() method
         # return self.TotalPrice
-<<<<<<< HEAD
-=======
-
-
->>>>>>> b4a175a51025b017191a6b6a76084c446322c96d
