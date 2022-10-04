@@ -17,30 +17,30 @@ from .utils import Util
 # from django_filters import FilterSet , DateFromToRangeFilter
 # from computed_property import ComputedTextField
 
-class User(AbstractUser):
-    is_buyer = models.BooleanField(default=False, null=True, blank=True)
-    is_vendor = models.BooleanField(default=False, null=True, blank=True)
-    email = models.EmailField(max_length=254, unique=True, null=True, blank=True)
-    uuid = models.CharField(max_length=500, blank=True)
-    digiNumber = models.CharField(max_length=100, null=True, blank=True)
-    Vendaddress = models.CharField(max_length=500, null=True, blank=True)
-    shopName = models.CharField(max_length=500, null=True, blank=True)
-    first_name = models.CharField(max_length=100, null=True, blank=True)
-    last_name = models.CharField(max_length=100, null=True, blank=True)
-    Country = models.CharField(max_length=225, null=True, blank=True)
-    State = models.CharField(max_length=225, null=True, blank=True)
-    City = models.CharField(max_length=225, null=True, blank=True)
-    notify = models.IntegerField(null=True, blank=True, default=0)
-    phone = models.CharField(max_length=20, null=True, blank=True)
-    gender = models.CharField(max_length=10, null=True, blank=True)
-    last_login = models.DateTimeField(null=True)
-    is_verified = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+# class User(AbstractUser):
+#     is_buyer = models.BooleanField(default=False, null=True, blank=True)
+#     is_vendor = models.BooleanField(default=False, null=True, blank=True)
+#     email = models.EmailField(max_length=254, unique=True, null=True, blank=True)
+#     uuid = models.CharField(max_length=500, blank=True)
+#     digiNumber = models.CharField(max_length=100, null=True, blank=True)
+#     Vendaddress = models.CharField(max_length=500, null=True, blank=True)
+#     shopName = models.CharField(max_length=500, null=True, blank=True)
+#     first_name = models.CharField(max_length=100, null=True, blank=True)
+#     last_name = models.CharField(max_length=100, null=True, blank=True)
+#     Country = models.CharField(max_length=225, null=True, blank=True)
+#     State = models.CharField(max_length=225, null=True, blank=True)
+#     City = models.CharField(max_length=225, null=True, blank=True)
+#     notify = models.IntegerField(null=True, blank=True, default=0)
+#     phone = models.CharField(max_length=20, null=True, blank=True)
+#     gender = models.CharField(max_length=10, null=True, blank=True)
+#     last_login = models.DateTimeField(null=True)
+#     is_verified = models.BooleanField(default=False)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
 
 
-    def _str_(self):
-        return f"{self.username}"
+#     def _str_(self):
+#         return f"{self.username}"
     # def save(self,*args,**kwargs):
     #    send_mail(
     #     'Vendor Registration',
@@ -201,11 +201,12 @@ class BECE(models.Model):
         x = uuid.uuid4().hex.upper()
         b=0
         genid=x[15:20]
-        # uniquecode=genid
+        
         print(genid)
         print(genid)
         if(self.SchoolType == '1'):
             self.uniquecode = genid
+            self.ExamCost = 0
             print(self.uniquecode)
         elif(self.SchoolType == '0'):
             self.uniquecode = b
@@ -213,9 +214,107 @@ class BECE(models.Model):
     # DisplayFields = ['id','ExamType','LedNumber','InvoiceNumber','SchoolName','StudentNumber','pricing']
 
     # @property
-   
-
+class ModelCollege(models.Model):
+    # EventsType = (
+    #     ('0', 'PRIVATE'),
+    #     ('1', 'PUBLIC')
+    # )
+    # is_technical = models.BooleanField(default=False, null = True, blank= True)
+    Payeremail = models.EmailField(
+        max_length=254, unique=True, null=True, blank=True)
+    Payerphone = models.CharField(max_length=100, null=True, blank=True)
+    SchoolId= models.CharField(max_length=100, null=True, blank=True)
+    CurrentSchoolName = models.CharField(max_length=100, null=True, blank=True)
+    PayerName = models.CharField(max_length=100, null=True, blank=True)
+    NumberOfCandidates = models.IntegerField(null=True, blank=True,default=0)
+    ChoiceSchoolName = models.CharField(max_length=200, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField( null=True, blank=True)
+    StartingDate = models.DateField(null=True, blank=True)
+    ClosingDate = models.DateField( null=True, blank=True)
+    ExamName =  models.CharField(max_length=100, null=True, blank=True)
+    LgaId = models.CharField(max_length=500, null=True, blank=True)
+    LgaName = models.CharField(max_length=500, null=True, blank=True)
+    ExamCost =  models.CharField(max_length=500, null=True, blank=True)
+    # SchoolType = models.CharField(max_length=100, choices=EventsType, null=True, blank=True)
+    # Street = models.CharField(max_length=100, null=True, blank=True)
+    adminemail = models.CharField(max_length=500, null=True, blank=True)
+    State = models.CharField(max_length=100, null=True, blank=True)
+    currentOffice = models.CharField(max_length=100, null=True, blank=True)
+    Mda = models.CharField(max_length=700, null=True, blank=True)
+    pinum = models.CharField(max_length=500, null=True, blank=True)
+    trnsref = models.CharField(max_length=100, null=True, blank=True)
+    uniquecode = models.CharField(max_length=100, null=True, blank=True)
+    # quota= models.CharField(max_length=100, null=True, blank=True)
+    # quota2 = models.CharField(max_length=100, null=True, blank=True)
     
+ 
+  
+class PublicScretariat(models.Model):
+    EventsType = (
+        ('0', 'Compulsory'),
+        ('1', 'Combine')
+    )
+    is_technical = models.BooleanField(default=False, null = True, blank= True)
+    candidateemail = models.EmailField(
+        max_length=254, unique=True, null=True, blank=True)
+    candidatephone = models.CharField(max_length=100, null=True, blank=True)
+    SchoolId= models.CharField(max_length=100, null=True, blank=True)
+    CurrentSchoolName = models.CharField(max_length=100, null=True, blank=True)
+    CandidateName = models.CharField(max_length=100, null=True, blank=True)
+    NumberOfCandidates = models.IntegerField(null=True, blank=True,default=0)
+    ChoiceSchoolName = models.CharField(max_length=200, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField( null=True, blank=True)
+    StartingDate = models.DateField(null=True, blank=True)
+    ClosingDate = models.DateField( null=True, blank=True)
+    ExamName =  models.CharField(max_length=100, null=True, blank=True)
+    OracleNumber = models.CharField(max_length=500, null=True, blank=True)
+    LgaName = models.CharField(max_length=500, null=True, blank=True)
+    ExamCost =  models.CharField(max_length=500, null=True, blank=True)
+    ExamType = models.CharField(max_length=100, choices=EventsType, null=True, blank=True)
+    # Street = models.CharField(max_length=100, null=True, blank=True)
+    adminemail = models.CharField(max_length=500, null=True, blank=True)
+    candidateAdress= models.CharField(max_length=100, null=True, blank=True)
+    currentOffice = models.CharField(max_length=100, null=True, blank=True)
+    Mda = models.CharField(max_length=700, null=True, blank=True)
+    pinum = models.CharField(max_length=500, null=True, blank=True)
+    trnsref = models.CharField(max_length=100, null=True, blank=True)
+    uniquecode = models.CharField(max_length=100, null=True, blank=True)
+    # quota= models.CharField(max_length=100, null=True, blank=True)
+    # quota2 = models.CharField(max_length=100, null=True, blank=True)
+    
+ 
+    def save(self, *args, **kwargs):
+        self.updates()
+        return super(PublicScretariat,self).save(*args,**kwargs)
+
+    # def update(self):
+    #     # self.TotalPrice= self.StudentNumber * 4
+    #         self.uniquecode = self.LgaId+''+ self.SchoolId+''+self.SchoolTypeId
+    # def save(self, *args, **kwargs):
+    #     self.update()
+        
+    #     return super(BECE,self).save(*args,**kwargs)
+
+    def updates(self):
+        # self.TotalPrice= self.StudentNumber * 4
+        # self.SchoolId = self.LgaId+''+ self.SchoolId+''+self.SchoolTypeId
+        # self.ExamCost = self.NumberOfCandidates * 4
+        x = uuid.uuid4().hex.upper()
+        b=0
+        genix=x[15:20]
+        genid=x[16:21]
+        self.OracleNumber=genix
+        self.pinum=genid
+        # uniquecode=genid
+        # print(genix)
+        # print(genix)
+        if(self.ExamType == '1'):
+            self.ExamCost = self.NumberOfCandidates * 4
+            print(self.uniquecode)
+        elif(self.ExamType == '0'):
+             self.ExamCost = self.NumberOfCandidates * 2
 
         # email body composition
         # email_body = self.InvoiceNumber

@@ -1,5 +1,5 @@
 
-from .models import Portals,BECE,JSS3
+from .models import Portals,BECE,JSS3,ModelCollege,PublicScretariat
 import uuid
 from rest_framework import serializers
 
@@ -8,6 +8,17 @@ class PortalSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Portals
+        fields = '__all__'
+class MCSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ModelCollege
+        fields = '__all__'
+
+class PBSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = PublicScretariat
         fields = '__all__'
 
 class BeceSerializer(serializers.ModelSerializer):

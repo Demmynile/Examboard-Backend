@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    "rest_framework.authtoken",
     'rest_framework',
     "corsheaders",
     'portal',
@@ -101,7 +102,7 @@ WSGI_APPLICATION = 'payportal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'examboard',
+        'NAME': 'examboard1',
         'HOST': 'localhost',
         'PORT': '3306',
         'USER': 'springstudent',
@@ -130,7 +131,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-AUTH_USER_MODEL = 'portal.User'
+# AUTH_USER_MODEL = 'portal.User'
 
 SITE_ID=1
 
