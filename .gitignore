@@ -93,3 +93,8 @@ db.sqlite3
 **/migrations/
 digicommerce/settings.py
 *.pyc
+payportal/settings.py
+payportal/settings.py
+*.pyc
+payportal/settings.py
+payment/migrations/0001_initial.py
