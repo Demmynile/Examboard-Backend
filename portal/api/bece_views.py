@@ -179,6 +179,20 @@ def getBeceInfo(request,pk):
     bece = BECE.objects.filter(SchoolId=pk)
     serializer = BeceSerializerd(bece, many=True)
     return Response(serializer.data)
+# bece = BECE.objects.filter(SchholType= pk2,SchoolId=pk).values()
+@api_view(['GET'])
+# @permission_classes([IsAuthenticated&IsVendorUser])
+def getTypeBeceInfo(request,pk):
+    bece = BECE.objects.filter(SchoolType=pk)
+    serializer = BeceSerializerd(bece, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+# @permission_classes([IsAuthenticated&IsVendorUser])
+def getAllsBeceInfo(request,pk,pk2):
+    bece = BECE.objects.filter(SchoolType= pk2,SchoolId=pk).values()
+    serializer = BeceSerializerd(bece, many=True)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 # @permission_classes([IsAuthenticated&IsVendorUser])
@@ -224,6 +238,32 @@ def PayBecePrivate(request, pk):
     bece.save()
     serializer = BeceSerializer(bece, many=False)
 
+@api_view(['PUT'])
+# @permission_classes([IsAdminUser])
+def PayBeceAnnualCharges(request, pk,pk2):
+    data = request.data
+    bece = BECE.objects.filter(SchoolType= pk2,SchoolId=pk).first()
+    # bece.quota = data['quota']
+    # bece.quota2 = data['quota2']
+    
+    
+    # bece.NumberOfCandidates = data['NumberOfCandidates']
+    
+    # bece.adminemail = data['adminemail']
+    # bece.SchoolName = data['SchoolName']
+    # bece.LgaName = data['LgaName']
+
+
+    # bece.SchoolType = data['SchoolType']
+    bece.TotalPrice  = data['TotalPrice']
+    bece.Mda  = data['Mda']
+    # bece.pinum = genid
+    
+    # if(bece.quota2 <= bece.quota):
+        # bece.pinum = genid
+    bece.save()
+    serializer = BeceSerializer(bece, many=False)
+    return Response(serializer.data)
 
 @api_view(['PUT'])
 # @permission_classes([IsAdminUser])
@@ -319,9 +359,9 @@ def PayJSSPrivate(request, pk):
     #              status=status.HTTP_400_BAD_REQUEST)
 @api_view(['PUT'])
 # @permission_classes([IsAdminUser])
-def PayBece(request, pk):
+def PayBece(request, pk,pk2):
     data = request.data
-    bece = BECE.objects.get(SchoolId=pk)
+    bece = BECE.objects.filter(SchoolType= pk2,SchoolId=pk).first()
     bece.quota = data['quota']
     bece.quota2 = data['quota2']
     bece.ClosingDate = parse_date(data['ClosingDate'])
@@ -366,8 +406,19 @@ def PayBece(request, pk):
         fail_silently=False,
        )
         return Response({'detail': 'you are too late please pay your charges '},status=status.HTTP_400_BAD_REQUEST)
+    if bece.Mda =='NOT PAID' :
+        
 
-    if(bece.quota2 <= bece.quota) and (bece.SchoolType!='1') :
+    #     send_mail(
+    #     [bece.SchoolName],
+    #     'attend to this school  above who is paying late for an exam',
+    #     'obalogun@sterlingtech.com.ng',
+    #     [bece.adminemail],
+    #     fail_silently=False,
+    #    )
+        return Response({'detail': ' please pay your  annual charges '},status=status.HTTP_400_BAD_REQUEST)
+
+    if(bece.quota2 <= bece.quota) and (bece.SchoolType!='1') and (bece.Mda == 'PAID') :
         bece.pinum = b
         bece.save()
         serializer = BeceSerializer(bece, many=False)
@@ -377,6 +428,31 @@ def PayBece(request, pk):
         bece.save()
         serializer = BeceSerializer(bece, many=False)
         return Response(serializer.data)
+
+@api_view(['PUT'])
+# @permission_classes([IsAdminUser])
+def PayBeceQuota(request, pk):
+    data = request.data
+    bece = BECE.objects.get(SchoolId=pk)
+    bece.SchoolType = data['SchoolType']
+    # bece.uniquecode = data['uniquecode']
+    bece.quota = data['quota']
+    x = uuid.uuid4().hex.upper()
+    b=0
+    genid=x[15:20]
+        
+    print(genid)
+    print(genid)
+    if(bece.SchoolType == '1'):
+            bece.uniquecode = genid
+          
+            
+    elif(bece.SchoolType == '0'):
+            bece.uniquecode = b
+
+    bece.save()
+    serializer = BeceSerializers(bece, many=False)
+    return Response(serializer.data)
     
 @api_view(['PUT'])
 # @permission_classes([IsAdminUser])

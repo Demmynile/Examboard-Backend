@@ -146,6 +146,10 @@ class BECE(models.Model):
         ('0', 'PRIVATE'),
         ('1', 'PUBLIC')
     )
+    EventsType2 = (
+        ('PAID', 'True'),
+        ('NOT PAID', 'False')
+    )
     # is_technical = models.BooleanField(default=False, null = True, blank= True)
     Payeremail = models.EmailField(
         max_length=254, unique=True, null=True, blank=True)
@@ -174,7 +178,7 @@ class BECE(models.Model):
     adminemail = models.CharField(max_length=500, null=True, blank=True)
     State = models.CharField(max_length=100, null=True, blank=True)
     currentOffice = models.CharField(max_length=100, null=True, blank=True)
-    Mda = models.CharField(max_length=100, null=True, blank=True)
+    Mda = models.CharField(max_length=100,choices=EventsType2 ,null=True, blank=True)
     pinum = models.CharField(max_length=500, null=True, blank=True)
     trnsref = models.CharField(max_length=100, null=True, blank=True)
     uniquecode = models.CharField(max_length=100, null=True, blank=True)
@@ -200,16 +204,11 @@ class BECE(models.Model):
         self.ExamCost = self.NumberOfCandidates * 4
         x = uuid.uuid4().hex.upper()
         b=0
-        genid=x[15:20]
         
-        print(genid)
-        print(genid)
         if(self.SchoolType == '1'):
-            self.uniquecode = genid
             self.ExamCost = 0
             print(self.uniquecode)
-        elif(self.SchoolType == '0'):
-            self.uniquecode = b
+       
 
     # DisplayFields = ['id','ExamType','LedNumber','InvoiceNumber','SchoolName','StudentNumber','pricing']
 

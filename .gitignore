@@ -98,3 +98,4 @@ payportal/settings.py
 *.pyc
 payportal/settings.py
 payment/migrations/0001_initial.py
+payportal/settings.py
