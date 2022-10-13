@@ -200,7 +200,7 @@ class BECE(models.Model):
 
     def updates(self):
         # self.TotalPrice= self.StudentNumber * 4
-        # self.SchoolId = self.LgaId+''+ self.SchoolId+''+self.SchoolTypeId
+        self.SchoolId = self.LgaId+''+self.SchoolTypeId
         self.ExamCost = self.NumberOfCandidates * 4
         x = uuid.uuid4().hex.upper()
         b=0
@@ -304,16 +304,22 @@ class PublicScretariat(models.Model):
         b=0
         genix=x[15:20]
         genid=x[16:21]
-        self.OracleNumber=genix
+        # self.OracleNumber=genix
         self.pinum=genid
         # uniquecode=genid
         # print(genix)
         # print(genix)
+        
         if(self.ExamType == '1'):
             self.ExamCost = self.NumberOfCandidates * 4
             print(self.uniquecode)
-        elif(self.ExamType == '0'):
+        elif(self.ExamType == '2'):
              self.ExamCost = self.NumberOfCandidates * 2
+        elif(self.ExamType == '3'):
+             self.ExamCost = self.NumberOfCandidates * 3
+        elif(self.ExamType == '4'):
+             self.ExamCost = self.NumberOfCandidates * 5
+
 
         # email body composition
         # email_body = self.InvoiceNumber
@@ -378,21 +384,31 @@ class JSS3(models.Model):
         
     #     return super(BECE,self).save(*args,**kwargs)
 
+    # def updates(self):
+    #     # self.TotalPrice= self.StudentNumber * 4
+    #     # self.SchoolId = self.LgaId+''+ self.SchoolId+''+self.SchoolTypeId
+    #     self.ExamCost = self.NumberOfCandidates * 3
+    #     x = uuid.uuid4().hex.upper()
+    #     b=0
+    #     genid=x[15:20]
+    #     # uniquecode=genid
+    #     print(genid)
+    #     print(genid)
+    #     if(self.SchoolType == '1'):
+    #         self.uniquecode = genid
+    #         print(self.uniquecode)
+    #     elif(self.SchoolType == '0'):
+    #         self.uniquecode = b
     def updates(self):
         # self.TotalPrice= self.StudentNumber * 4
-        # self.SchoolId = self.LgaId+''+ self.SchoolId+''+self.SchoolTypeId
-        self.ExamCost = self.NumberOfCandidates * 3
+        self.SchoolId = self.LgaId+''+self.SchoolTypeId
+        self.ExamCost = self.NumberOfCandidates * 4
         x = uuid.uuid4().hex.upper()
         b=0
-        genid=x[15:20]
-        # uniquecode=genid
-        print(genid)
-        print(genid)
+        
         if(self.SchoolType == '1'):
-            self.uniquecode = genid
+            self.ExamCost = 0
             print(self.uniquecode)
-        elif(self.SchoolType == '0'):
-            self.uniquecode = b
 
     # DisplayFields = ['id','ExamType','LedNumber','InvoiceNumber','SchoolName','StudentNumber','pricing']
 

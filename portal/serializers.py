@@ -25,7 +25,7 @@ class BeceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BECE
-        fields = [ 'adminemail','SchoolTypeId','Payeremail','Mda','TotalPrice','SchoolName','SchoolType','quota','uniquecode','LgaId','PayerName','quota2','LgaName']
+        fields = [ 'adminemail','SchoolTypeId','Payeremail','Mda','TotalPrice','SchoolName','SchoolType','quota','uniquecode','LgaId','PayerName','quota2','LgaName', 'pinum']
 class BeceSerializerd(serializers.ModelSerializer):
 
     class Meta:
@@ -41,12 +41,12 @@ class Jss3Serializer(serializers.ModelSerializer):
 
    class Meta:
         model = JSS3
-        fields = [ 'ClosingDate','StartingDate','SchoolTypeId','SchoolName','SchoolType','SchoolId','quota','uniquecode','LgaId','LgaName']
+        fields = [ 'ClosingDate','StartingDate','SchoolTypeId','SchoolName','SchoolType','SchoolId','quota','uniquecode','LgaId','LgaName' , 'pinum' , 'NumberOfCandidates', 'ExamCost']
 class BeceSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = BECE
-        fields = [ 'ClosingDate','StartingDate','SchoolTypeId','SchoolName','SchoolType','SchoolId','quota','uniquecode','LgaId','LgaName']
+        fields = [ 'ClosingDate','StartingDate','SchoolTypeId','SchoolName','SchoolType','SchoolId','quota','uniquecode','LgaId','LgaName','Mda','pinum','Payeremail']
 
 class CreateListMixin:
     """Allows bulk creation of a resource."""

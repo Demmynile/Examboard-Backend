@@ -179,6 +179,13 @@ def getBeceInfo(request,pk):
     bece = BECE.objects.filter(SchoolId=pk)
     serializer = BeceSerializerd(bece, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+# @permission_classes([IsAuthenticated&IsVendorUser])
+def getBecePin(request,pk):
+    bece = BECE.objects.filter(pinum=pk)
+    serializer = BeceSerializerd(bece, many=True)
+    return Response(serializer.data)
 # bece = BECE.objects.filter(SchholType= pk2,SchoolId=pk).values()
 @api_view(['GET'])
 # @permission_classes([IsAuthenticated&IsVendorUser])
@@ -208,11 +215,18 @@ def getJss3Info(request,pk):
     serializer = Jss3Serializerd(jss, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+# @permission_classes([IsAuthenticated&IsVendorUser])
+def getTypeJss3Info(request,pk):
+    jss = JSS3.objects.filter(SchoolType=pk)
+    serializer = Jss3Serializerd(jss, many=True)
+    return Response(serializer.data)
+
 @api_view(['PUT'])
 # @permission_classes([IsAdminUser])
-def PayBecePrivate(request, pk):
+def PayBecePrivate(request, pk,pk2):
     data = request.data
-    bece = BECE.objects.get(SchoolId=pk)
+    bece = BECE.objects.filter(SchoolType= pk2,SchoolId=pk).first()
     # bece.quota = data['quota']
     # bece.quota2 = data['quota2']
 
@@ -317,9 +331,9 @@ def PayPublicService(request, pk):
 
 @api_view(['PUT'])
 # @permission_classes([IsAdminUser])
-def PayJSSPrivate(request, pk):
+def PayJSSPrivate(request, pk,pk2):
     data = request.data
-    jss= JSS3.objects.get(SchoolId=pk)
+    jss = JSS3.objects.filter(SchoolType= pk2,SchoolId=pk).first()
     # bece.quota = data['quota']
     # bece.quota2 = data['quota2']
 
@@ -406,7 +420,7 @@ def PayBece(request, pk,pk2):
         fail_silently=False,
        )
         return Response({'detail': 'you are too late please pay your charges '},status=status.HTTP_400_BAD_REQUEST)
-    if bece.Mda =='NOT PAID' :
+    if (bece.Mda =='NOT PAID')  and (bece.SchoolType == '0'):
         
 
     #     send_mail(
@@ -418,7 +432,7 @@ def PayBece(request, pk,pk2):
     #    )
         return Response({'detail': ' please pay your  annual charges '},status=status.HTTP_400_BAD_REQUEST)
 
-    if(bece.quota2 <= bece.quota) and (bece.SchoolType!='1') and (bece.Mda == 'PAID') :
+    if(bece.quota2 <= bece.quota) and (bece.SchoolType!='1') :
         bece.pinum = b
         bece.save()
         serializer = BeceSerializer(bece, many=False)
@@ -431,9 +445,9 @@ def PayBece(request, pk,pk2):
 
 @api_view(['PUT'])
 # @permission_classes([IsAdminUser])
-def PayBeceQuota(request, pk):
+def PayBeceQuota(request, pk,pk2):
     data = request.data
-    bece = BECE.objects.get(SchoolId=pk)
+    bece = BECE.objects.filter(SchoolType= pk2,SchoolId=pk).first()
     bece.SchoolType = data['SchoolType']
     # bece.uniquecode = data['uniquecode']
     bece.quota = data['quota']
@@ -445,13 +459,75 @@ def PayBeceQuota(request, pk):
     print(genid)
     if(bece.SchoolType == '1'):
             bece.uniquecode = genid
-          
+            send_mail(
+        [bece.SchoolName],
+        'your unique code is ',[bece.uniquecode],
+        'obalogun@sterlingtech.com.ng',
+        [bece.Payeremail],
+        fail_silently=False,
+       )
             
     elif(bece.SchoolType == '0'):
             bece.uniquecode = b
 
     bece.save()
     serializer = BeceSerializers(bece, many=False)
+    return Response(serializer.data)
+
+@api_view(['PUT'])
+# @permission_classes([IsAdminUser])
+def PayJssQuota(request, pk):
+    data = request.data
+    jss = JSS3.objects.get(SchoolId=pk)
+    jss.SchoolType = data['SchoolType']
+    # bece.uniquecode = data['uniquecode']
+    jss.quota = data['quota']
+    x = uuid.uuid4().hex.upper()
+    b=0
+    genid=x[15:20]
+        
+    print(genid)
+    print(genid)
+    if(jss.SchoolType == '1'):
+            jss.uniquecode = genid
+          
+            
+    elif(jss.SchoolType == '0'):
+            jss.uniquecode = b
+
+    jss.save()
+    serializer = Jss3Serializer(jss, many=False)
+    return Response(serializer.data)
+
+@api_view(['PUT'])
+# @permission_classes([IsAdminUser])
+def PayJss3Quota(request, pk,pk2):
+    data = request.data
+    jss= JSS3.objects.filter(SchoolType= pk2,SchoolId=pk).first()
+    jss.SchoolType = data['SchoolType']
+    # bece.uniquecode = data['uniquecode']
+    jss.quota = data['quota']
+    x = uuid.uuid4().hex.upper()
+    b=0
+    genid=x[15:20]
+        
+    print(genid)
+    print(genid)
+    if(jss.SchoolType == '1'):
+            jss.uniquecode = genid
+            send_mail(
+        [jss.SchoolName],
+        'your unique code is ',[jss.uniquecode],
+        'obalogun@sterlingtech.com.ng',
+        [jss.Payeremail],
+        fail_silently=False,
+       )
+            
+    elif(jss.SchoolType == '0'):
+            jss.uniquecode = b
+
+    jss.save()
+    serializer = Jss3Serializer(jss, many=False)
     return Response(serializer.data)
     
 @api_view(['PUT'])
@@ -570,28 +646,29 @@ def getShoppedPin(request,pk):
 
 @api_view(['PUT'])
 # @permission_classes([IsAdminUser])
-def PayJss(request, pk):
+def PayJss(request, pk,pk2):
     data = request.data
-    jss = JSS3.objects.get(SchoolId=pk)
+    jss = JSS3.objects.filter(SchoolType= pk2,SchoolId=pk).first()
     jss.quota = data['quota']
     jss.quota2 = data['quota2']
+    jss.ClosingDate = parse_date(data['ClosingDate'])
 
     x = uuid.uuid4().hex.upper()
     b=0
     genid=x[15:20]
     
     
-    # bece.NumberOfCandidates = data['NumberOfCandidates']
+    jss.NumberOfCandidates = data['NumberOfCandidates']
     
     jss.adminemail = data['adminemail']
-    jss.SchoolName = data['SchoolName']
+    jss .SchoolName = data['SchoolName']
     jss.LgaName = data['LgaName']
 
 
     jss.SchoolType = data['SchoolType']
     jss.Payeremail = data['Payeremail']
     jss.PayerName = data['PayerName']
-    
+      
     if(jss.quota2 > jss.quota) :
         print(datetime.date.today())
 
@@ -602,21 +679,32 @@ def PayJss(request, pk):
         [jss.adminemail],
         fail_silently=False,
        )
-        return Response({'detail': 'you cant pay more than this quota'},
-                 status=status.HTTP_400_BAD_REQUEST)
+        return Response({'detail': 'you cant pay more than this quota'},status=status.HTTP_400_BAD_REQUEST)
+        #  return Response({"status": "success","data":serializer.data,'viewed': product.viewed}, status=status.HTTP_200_OK)
 
     if date.today()  > jss.ClosingDate :
         print(datetime.date.today())
 
         send_mail(
         [jss.SchoolName],
-        'attend to this school  above who is trying to enter more than what was allocated',
-         'obalogun@sterlingtech.com.ng',
+        'attend to this school  above who is paying late for an exam',
+        'obalogun@sterlingtech.com.ng',
         [jss.adminemail],
         fail_silently=False,
        )
-        return Response({'detail': 'you are too late please pay your charges '},
-                 status=status.HTTP_400_BAD_REQUEST)
+        return Response({'detail': 'you are too late please pay your charges '},status=status.HTTP_400_BAD_REQUEST)
+    # if bece.Mda =='NOT PAID' :
+        
+
+    # #     send_mail(
+    # #     [bece.SchoolName],
+    # #     'attend to this school  above who is paying late for an exam',
+    # #     'obalogun@sterlingtech.com.ng',
+    # #     [bece.adminemail],
+    # #     fail_silently=False,
+    # #    )
+    #     return Response({'detail': ' please pay your  annual charges '},status=status.HTTP_400_BAD_REQUEST)
+
     if(jss.quota2 <= jss.quota) and (jss.SchoolType!='1') :
         jss.pinum = b
         jss.save()
@@ -625,8 +713,9 @@ def PayJss(request, pk):
     if(jss.quota2 <= jss.quota) and (jss.SchoolType== '1') :
         jss.pinum = genid
         jss.save()
-        serializer = BeceSerializer(jss, many=False)
+        serializer = Jss3Serializer(jss, many=False)
         return Response(serializer.data)
+
 @api_view(['PUT'])
 # @permission_classes([IsAdminUser])
 def PayJssAdmin(request, pk):
