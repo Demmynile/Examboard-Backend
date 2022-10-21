@@ -13,10 +13,11 @@ from django.core.mail import send_mail
 from django.core import serializers as core_serializers
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.viewsets import ViewSet
-from portal.models import BECE,JSS3,ModelCollege,PublicScretariat
-from portal.serializers import BeceSerializer,CreateListMixin,PBSerializer,BeceSerializers,BeceSerializerd,Jss3Serializer,Jss3Serializerd,MCSerializer
+from portal.models import BECE,JSS3,ModelCollege,PublicScretariat,Payments
+from portal.serializers import BeceSerializer,PaymentSerializer,CreateListMixin,PBSerializer,BeceSerializers,BeceSerializerd,Jss3Serializer,Jss3Serializerd,MCSerializer
 from django.http import HttpResponse
 import uuid
+from datetime import timedelta
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
 from rest_framework import status
@@ -111,6 +112,12 @@ class BeceViewSet(CreateListMixin,viewsets.ModelViewSet):
     queryset = BECE.objects.all()
     serializer_class = BeceSerializers
     lookup_field = 'uniquecode'
+
+class PaymenViewSet(CreateListMixin,viewsets.ModelViewSet):
+
+    queryset = Payments.objects.all()
+    serializer_class = PaymentSerializer
+    # lookup_field = 'uniquecode'
 
 class PublicServiceViewSet(CreateListMixin,viewsets.ModelViewSet):
 
@@ -226,7 +233,7 @@ def getTypeJss3Info(request,pk):
 # @permission_classes([IsAdminUser])
 def PayBecePrivate(request, pk,pk2):
     data = request.data
-    bece = BECE.objects.filter(SchoolType= pk2,SchoolId=pk).first()
+    bece = BECE.objects.filter(SchoolType=pk2,SchoolId=pk).first()
     # bece.quota = data['quota']
     # bece.quota2 = data['quota2']
 
@@ -251,6 +258,7 @@ def PayBecePrivate(request, pk,pk2):
         # bece.pinum = genid
     bece.save()
     serializer = BeceSerializer(bece, many=False)
+    return Response(serializer.data)
 
 @api_view(['PUT'])
 # @permission_classes([IsAdminUser])
@@ -266,14 +274,28 @@ def PayBeceAnnualCharges(request, pk,pk2):
     # bece.adminemail = data['adminemail']
     # bece.SchoolName = data['SchoolName']
     # bece.LgaName = data['LgaName']
-
+    bece.ClosingDate = parse_date(data['ClosingDate'])
+    bece.LgaId = data['LgaId']
+    bece.SchoolTypeId =data['SchoolTypeId']
 
     # bece.SchoolType = data['SchoolType']
     bece.TotalPrice  = data['TotalPrice']
     bece.Mda  = data['Mda']
     # bece.pinum = genid
+    if (bece.Mda =='PAID')  and (bece.SchoolType == '0'):
+
+     bece.ClosingDate += timedelta(days=60)
+        
+
+    # #     send_mail(
+    # #     [bece.SchoolName],
+    # #     'attend to this school  above who is paying late for an exam',
+    # #     'obalogun@sterlingtech.com.ng',
+    # #     [bece.adminemail],
+    # #     fail_silently=False,
+    # #    )
+    #  return Response({'detail': ' your payment is successful '},status=status.HTTP_200_OK)
     
-    # if(bece.quota2 <= bece.quota):
         # bece.pinum = genid
     bece.save()
     serializer = BeceSerializer(bece, many=False)
@@ -357,7 +379,7 @@ def PayJSSPrivate(request, pk,pk2):
     # if(bece.quota2 <= bece.quota):
         # bece.pinum = genid
     jss.save()
-    serializer = BeceSerializer(jss, many=False)
+    serializer = Jss3Serializer(jss, many=False)
     return Response(serializer.data)
        
     # elif(bece.quota2 > bece.quota):
@@ -409,7 +431,7 @@ def PayBece(request, pk,pk2):
         return Response({'detail': 'you cant pay more than this quota'},status=status.HTTP_400_BAD_REQUEST)
         #  return Response({"status": "success","data":serializer.data,'viewed': product.viewed}, status=status.HTTP_200_OK)
 
-    if date.today()  > bece.ClosingDate :
+    if date.today()  > bece.ClosingDate  and (bece.Mda =='NOT PAID'):
         print(datetime.date.today())
 
         send_mail(
@@ -419,18 +441,18 @@ def PayBece(request, pk,pk2):
         [bece.adminemail],
         fail_silently=False,
        )
-        return Response({'detail': 'you are too late please pay your charges '},status=status.HTTP_400_BAD_REQUEST)
-    if (bece.Mda =='NOT PAID')  and (bece.SchoolType == '0'):
+        return Response({'detail': 'your request is late, Late registration surcharge is applicable'},status=status.HTTP_400_BAD_REQUEST)
+    # if (bece.Mda =='NOT PAID')  and (bece.SchoolType == '0'):
         
 
-    #     send_mail(
-    #     [bece.SchoolName],
-    #     'attend to this school  above who is paying late for an exam',
-    #     'obalogun@sterlingtech.com.ng',
-    #     [bece.adminemail],
-    #     fail_silently=False,
-    #    )
-        return Response({'detail': ' please pay your  annual charges '},status=status.HTTP_400_BAD_REQUEST)
+    # #     send_mail(
+    # #     [bece.SchoolName],
+    # #     'attend to this school  above who is paying late for an exam',
+    # #     'obalogun@sterlingtech.com.ng',
+    # #     [bece.adminemail],
+    # #     fail_silently=False,
+    # #    )
+    #     return Response({'detail': ' please pay your  annual charges '},status=status.HTTP_400_BAD_REQUEST)
 
     if(bece.quota2 <= bece.quota) and (bece.SchoolType!='1') :
         bece.pinum = b
@@ -447,8 +469,10 @@ def PayBece(request, pk,pk2):
 # @permission_classes([IsAdminUser])
 def PayBeceQuota(request, pk,pk2):
     data = request.data
-    bece = BECE.objects.filter(SchoolType= pk2,SchoolId=pk).first()
+    bece = BECE.objects.filter(SchoolType=pk2,SchoolId=pk).first()
     bece.SchoolType = data['SchoolType']
+    bece.ClosingDate = parse_date(data['ClosingDate'])
+    bece.Payeremail=data['Payeremail']
     # bece.uniquecode = data['uniquecode']
     bece.quota = data['quota']
     x = uuid.uuid4().hex.upper()
@@ -460,8 +484,8 @@ def PayBeceQuota(request, pk,pk2):
     if(bece.SchoolType == '1'):
             bece.uniquecode = genid
             send_mail(
-        [bece.SchoolName],
-        'your unique code is ',[bece.uniquecode],
+        [bece.uniquecode],
+        'your unique code is  shown above',
         'obalogun@sterlingtech.com.ng',
         [bece.Payeremail],
         fail_silently=False,
@@ -505,6 +529,8 @@ def PayJss3Quota(request, pk,pk2):
     data = request.data
     jss= JSS3.objects.filter(SchoolType= pk2,SchoolId=pk).first()
     jss.SchoolType = data['SchoolType']
+    jss.ClosingDate = parse_date(data['ClosingDate'])
+    jss.Payeremail=data['Payeremail']
     # bece.uniquecode = data['uniquecode']
     jss.quota = data['quota']
     x = uuid.uuid4().hex.upper()
@@ -516,12 +542,12 @@ def PayJss3Quota(request, pk,pk2):
     if(jss.SchoolType == '1'):
             jss.uniquecode = genid
             send_mail(
-        [jss.SchoolName],
-        'your unique code is ',[jss.uniquecode],
-        'obalogun@sterlingtech.com.ng',
-        [jss.Payeremail],
-        fail_silently=False,
-       )
+            [jss.uniquecode],
+            'your unique code is ',
+            'obalogun@sterlingtech.com.ng',
+            [jss.Payeremail],
+            fail_silently=False,
+            )
             
     elif(jss.SchoolType == '0'):
             jss.uniquecode = b

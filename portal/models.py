@@ -108,8 +108,64 @@ class Portals(models.Model):
     trnsref = models.CharField(max_length=100, null=True, blank=True)
     
  
-    
+class Payments(models.Model):
 
+    # is_technical = models.BooleanField(default=False, null = True, blank= True)
+    email = models.EmailField(
+        max_length=254, unique=True, null=True, blank=True)
+    REQUIRED_FIELDS = []
+    EventsType = (
+        ('Name Coorection', 'Correction Of Names'),
+        ('TEDAC', 'TEDAC'),
+        ('Change Of Status', 'Change Of Status'),
+        ('Collection Of Certificates', 'Collection Of Certificates'),
+        ('Reactivation Of School Codes', 'Reactivation Of School Codes'),
+        ( 'B.E.C.E Result', 'B.E.C.E Result')
+    )
+    phone = models.CharField(max_length=100, null=True, blank=True)
+    Name = models.CharField(max_length=100, null=True, blank=True)
+    PayerID = models.CharField(max_length=100, null=True, blank=True)
+    LassraNumber = models.CharField(max_length=100, null=True, blank=True)
+    TotalPrice = models.IntegerField(null=True, blank=True)
+    StudentNumber = models.IntegerField(null=True, blank=True)
+    SchoolName = models.CharField(max_length=200, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
+    PaymentType = models.CharField(
+    max_length=100, choices=EventsType, null=True, default=0, blank=True)
+    Street = models.CharField(max_length=100, null=True, blank=True)
+    Payeremail = models.EmailField(
+        max_length=254, unique=True, null=True, blank=True)
+    TownCity = models.CharField(max_length=100, null=True, blank=True)
+    State = models.CharField(max_length=100, null=True, blank=True)
+    currentOffice = models.CharField(max_length=100, null=True, blank=True)
+    Mda = models.CharField(max_length=100, null=True, blank=True)
+    staffID = models.CharField(max_length=100, null=True, blank=True)
+    Address = models.CharField(max_length=100, null=True, blank=True)
+    pinum = models.CharField(max_length=100, null=True, blank=True)
+    trnsref = models.CharField(max_length=100, null=True, blank=True)
+    
+    def save(self, *args, **kwargs):
+        self.updates()
+        return super(Payments,self).save(*args,**kwargs)
+
+    # def update(self):
+    #     # self.TotalPrice= self.StudentNumber * 4
+    #         self.uniquecode = self.LgaId+''+ self.SchoolId+''+self.SchoolTypeId
+    # def save(self, *args, **kwargs):
+    #     self.update()
+        
+    #     return super(BECE,self).save(*args,**kwargs)
+
+    def updates(self):
+        # self.TotalPrice= self.StudentNumber * 4
+       
+        x = uuid.uuid4().hex.upper()
+        genid=x[16:21]
+        self.trnsref=genid
+        b=0
+        
+     
 
     # DisplayFields = ['id','ExamType','LedNumber','InvoiceNumber','SchoolName','StudentNumber','pricing']
 
@@ -161,6 +217,7 @@ class BECE(models.Model):
     SchoolName = models.CharField(max_length=100, null=True, blank=True)
     PayerName = models.CharField(max_length=100, null=True, blank=True)
     TotalPrice = models.IntegerField(null=True, blank=True)
+    CodePrice = models.IntegerField(null=True, blank=True)
     NumberOfCandidates = models.IntegerField(null=True, blank=True,default=0)
     SchoolName = models.CharField(max_length=200, null=True, blank=True)
     session_token = models.CharField(
@@ -251,8 +308,10 @@ class ModelCollege(models.Model):
   
 class PublicScretariat(models.Model):
     EventsType = (
-        ('0', 'Compulsory'),
-        ('1', 'Combine')
+        ('1', 'Compulsory'),
+        ('2', 'C.O 2'),
+        ('3', 'C.A'),
+        ('4', 'Trade Test'),
     )
     is_technical = models.BooleanField(default=False, null = True, blank= True)
     candidateemail = models.EmailField(
@@ -311,14 +370,14 @@ class PublicScretariat(models.Model):
         # print(genix)
         
         if(self.ExamType == '1'):
-            self.ExamCost = self.NumberOfCandidates * 4
+            self.ExamCost = 2 * 4
             print(self.uniquecode)
         elif(self.ExamType == '2'):
-             self.ExamCost = self.NumberOfCandidates * 2
+             self.ExamCost = 1 * 2
         elif(self.ExamType == '3'):
-             self.ExamCost = self.NumberOfCandidates * 3
+             self.ExamCost = 3 * 3
         elif(self.ExamType == '4'):
-             self.ExamCost = self.NumberOfCandidates * 5
+             self.ExamCost = 2 * 5
 
 
         # email body composition

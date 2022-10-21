@@ -1,5 +1,5 @@
 
-from .models import Portals,BECE,JSS3,ModelCollege,PublicScretariat
+from .models import Portals,BECE,JSS3,ModelCollege,PublicScretariat,Payments
 import uuid
 from rest_framework import serializers
 
@@ -8,6 +8,11 @@ class PortalSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Portals
+        fields = '__all__'
+class PaymentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Payments
         fields = '__all__'
 class MCSerializer(serializers.ModelSerializer):
 
@@ -25,7 +30,7 @@ class BeceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BECE
-        fields = [ 'adminemail','SchoolTypeId','Payeremail','Mda','TotalPrice','SchoolName','SchoolType','quota','uniquecode','LgaId','PayerName','quota2','LgaName', 'pinum']
+        fields = [ 'adminemail','SchoolTypeId','Payeremail','Mda','TotalPrice','SchoolName','SchoolType','quota','uniquecode','LgaId','PayerName','quota2','LgaName', 'pinum' , 'NumberOfCandidates']
 class BeceSerializerd(serializers.ModelSerializer):
 
     class Meta:
@@ -46,7 +51,7 @@ class BeceSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = BECE
-        fields = [ 'ClosingDate','StartingDate','SchoolTypeId','SchoolName','SchoolType','SchoolId','quota','uniquecode','LgaId','LgaName','Mda','pinum','Payeremail']
+        fields = [ 'ClosingDate','StartingDate','SchoolTypeId','SchoolName','SchoolType','SchoolId','quota','uniquecode','LgaId','LgaName','Mda','Payeremail','pinum']
 
 class CreateListMixin:
     """Allows bulk creation of a resource."""

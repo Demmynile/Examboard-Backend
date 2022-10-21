@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from portal.views import PortaltViewSet
-from portal.api.bece_views import BeceViewSet,getAllsBeceInfo,getBecePin,PayJss3Quota,getTypeJss3Info,PayBeceAnnualCharges,getTypeBeceInfo,CustomAuthToken,PayBeceQuota,PayPublicService,getPserviceInfo,getBeceInfo,PublicServiceViewSet,PayBece,getShoppedPin,Jss3ViewSet,getJss3Info,PayJss,UpdatePayBece,PayBecePrivate,MCViewSet,PayJSSPrivate,PayBeceAdmin,PayJssAdmin
+from portal.api.bece_views import BeceViewSet,PaymenViewSet,getAllsBeceInfo,getBecePin,PayJss3Quota,getTypeJss3Info,PayBeceAnnualCharges,getTypeBeceInfo,CustomAuthToken,PayBeceQuota,PayPublicService,getPserviceInfo,getBeceInfo,PublicServiceViewSet,PayBece,getShoppedPin,Jss3ViewSet,getJss3Info,PayJss,UpdatePayBece,PayBecePrivate,MCViewSet,PayJSSPrivate,PayBeceAdmin,PayJssAdmin
 from payment.views import PaymentViewSet
 # from portal.views import BeceViewSet
 
@@ -31,6 +31,7 @@ router.register(r'bece' ,  BeceViewSet)
 router.register(r'bece', BeceViewSet) # upload bece data
 router.register(r'jss', Jss3ViewSet) # upload jss data
 router.register(r'bece', BeceViewSet) # upload bece data
+router.register(r'payall', PaymenViewSet) # payment for all types of services
 router.register(r'jss', Jss3ViewSet) # upload jss data
 router.register(r'mcollege', MCViewSet) # model college payment
 router.register(r'pservice', PublicServiceViewSet) # public service payment upload from admin
