@@ -268,19 +268,28 @@ class BECE(models.Model):
        
 
     # DisplayFields = ['id','ExamType','LedNumber','InvoiceNumber','SchoolName','StudentNumber','pricing']
+class LateRegistration(models.Model):
 
-    # @property
-class ModelCollege(models.Model):
+     Mda = models.CharField(max_length=700, null=True, blank=True)
+     ClosingDate = models.DateField( null=True, blank=True)
     # EventsType = (
     #     ('0', 'PRIVATE'),
     #     ('1', 'PUBLIC')
     # )
     # is_technical = models.BooleanField(default=False, null = True, blank= True)
+    # @property
+class ModelCollege(models.Model):
+    ClosingDate = models.DateField( null=True, blank=True)
+    EventsType = (
+        ('0', 'PAID'),
+        ('1', 'NOT PAID')
+    )
+    # is_technical = models.BooleanField(default=False, null = True, blank= True)
     Payeremail = models.EmailField(
         max_length=254, unique=True, null=True, blank=True)
     Payerphone = models.CharField(max_length=100, null=True, blank=True)
     SchoolId= models.CharField(max_length=100, null=True, blank=True)
-    CurrentSchoolName = models.CharField(max_length=100, null=True, blank=True)
+    CurrentSchoolName = models.CharField(max_length=100, choices=EventsType, null=True, blank=True)
     PayerName = models.CharField(max_length=100, null=True, blank=True)
     NumberOfCandidates = models.IntegerField(null=True, blank=True,default=0)
     ChoiceSchoolName = models.CharField(max_length=200, null=True, blank=True)

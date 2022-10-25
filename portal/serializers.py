@@ -1,5 +1,6 @@
 
-from .models import Portals,BECE,JSS3,ModelCollege,PublicScretariat,Payments
+from .models import Portals,BECE,JSS3,ModelCollege,PublicScretariat,Payments,LateRegistration
+
 import uuid
 from rest_framework import serializers
 
@@ -13,6 +14,11 @@ class PaymentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Payments
+        fields = '__all__'
+class lateregistraionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = LateRegistration
         fields = '__all__'
 class MCSerializer(serializers.ModelSerializer):
 
@@ -30,7 +36,14 @@ class BeceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = BECE
-        fields = [ 'adminemail','SchoolTypeId','Payeremail','Mda','TotalPrice','SchoolName','SchoolType','quota','uniquecode','LgaId','PayerName','quota2','LgaName', 'pinum' , 'NumberOfCandidates']
+        fields = [ 'adminemail','SchoolTypeId','CodePrice','Payeremail','SchoolId','Mda','TotalPrice','SchoolName','SchoolType','quota','uniquecode','LgaId','PayerName','quota2','LgaName', 'pinum' , 'NumberOfCandidates']
+
+class BecSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = BECE
+        fields = [ 'adminemail','PayerID','CodePrice','SchoolTypeId','Payeremail','Mda','TotalPrice','SchoolName','SchoolType','quota','uniquecode','LgaId','PayerName','quota2','LgaName', 'pinum' , 'NumberOfCandidates']
+
 class BeceSerializerd(serializers.ModelSerializer):
 
     class Meta:

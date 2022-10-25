@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from portal.views import PortaltViewSet
-from portal.api.bece_views import BeceViewSet,PaymenViewSet,getAllsBeceInfo,getBecePin,PayJss3Quota,getTypeJss3Info,PayBeceAnnualCharges,getTypeBeceInfo,CustomAuthToken,PayBeceQuota,PayPublicService,getPserviceInfo,getBeceInfo,PublicServiceViewSet,PayBece,getShoppedPin,Jss3ViewSet,getJss3Info,PayJss,UpdatePayBece,PayBecePrivate,MCViewSet,PayJSSPrivate,PayBeceAdmin,PayJssAdmin
+from portal.api.bece_views import BeceViewSet,BecesViewSet,getLateInfo,PaymenViewSet,getAllsBeceInfo,getBecePin,PayJss3Quota,getTypeJss3Info,PayBeceAnnualCharges,getTypeBeceInfo,CustomAuthToken,PayBeceQuota,PayPublicService,getPserviceInfo,getBeceInfo,PublicServiceViewSet,PayBece,getShoppedPin,Jss3ViewSet,getJss3Info,PayJss,UpdatePayBece,PayBecePrivate,MCViewSet,PayJSSPrivate,PayBeceAdmin,PayJssAdmin
 from payment.views import PaymentViewSet
 # from portal.views import BeceViewSet
 
@@ -28,6 +28,7 @@ router = DefaultRouter()
 router.register(r'portals', PortaltViewSet)
 router.register(r'payment', PaymentViewSet)
 router.register(r'bece' ,  BeceViewSet)
+router.register(r'beces' ,  BecesViewSet) # pay for school code
 router.register(r'bece', BeceViewSet) # upload bece data
 router.register(r'jss', Jss3ViewSet) # upload jss data
 router.register(r'bece', BeceViewSet) # upload bece data
@@ -43,6 +44,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
     path('beceid/<str:pk>/', getBeceInfo, name ="getBeceinformation"),# getbeceinfo
+    path('latereg/<str:pk>/', getLateInfo, name ="getlatereg info"),# get alte reg info
     path('becepin/<str:pk>/', getBecePin, name ="getBece pin information"),# getbece pin info
     path('allbece/<str:pk>/<str:pk2>/',getAllsBeceInfo, name ="getBeceinformation based on two params"),# getbeceinfo based on school type and schoolid
     path('becepayment/<str:pk>/<str:pk2>/', PayBece, name ="getBeceinformation"),# pay for bece exams form

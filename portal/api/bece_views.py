@@ -5,6 +5,8 @@ from urllib import response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.db.models import query
 from django.forms import DateField
+import random
+import numpy as np
 from django.utils.dateparse import parse_date
 from rest_framework.authtoken.views import ObtainAuthToken
 from django.shortcuts import get_object_or_404
@@ -13,13 +15,13 @@ from django.core.mail import send_mail
 from django.core import serializers as core_serializers
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.viewsets import ViewSet
-from portal.models import BECE,JSS3,ModelCollege,PublicScretariat,Payments
-from portal.serializers import BeceSerializer,PaymentSerializer,CreateListMixin,PBSerializer,BeceSerializers,BeceSerializerd,Jss3Serializer,Jss3Serializerd,MCSerializer
+from portal.models import BECE,JSS3,ModelCollege,PublicScretariat,Payments,LateRegistration
+from portal.serializers import BeceSerializer,PaymentSerializer,CreateListMixin,PBSerializer,BeceSerializers,BeceSerializerd,Jss3Serializer,Jss3Serializerd,MCSerializer,lateregistraionSerializer
 from django.http import HttpResponse
 import uuid
 from datetime import timedelta
 from rest_framework.authtoken.models import Token
-from rest_framework.decorators import action
+from rest_framework.decorators import action,api_view
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
@@ -76,30 +78,44 @@ class MCViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["POST"])
     def generate_pin(self, request):
-          Payeremail  = request.data.get('Payeremail')
+          
+        #   ph = parse_date(lr)
+        #   print(lr)
+        #   Payeremail  = request.data.get('Payeremail')
           CurrentSchoolName = request.data.get('CurrentSchoolName')
           trnsref = request.data.get('trnsref')
           PayerName = request.data.get('PayerName')
+          ClosingDate = parse_date(request.data.get('ClosingDate'))
           ExamCost = request.data.get('ExamCost')
           Payerphone = request.data.get('Payerphone')
           LgaId = request.data.get('LgaId')
+          
           SchoolId = request.data.get('SchoolId')
-          ChoiceSchoolName = request.data.get('ChoiceSchoolName')
           pinum = (request.data.get('pinnum'))
           NumberOfCandidates  = int(request.data.get('NumberOfCandidates'))
           ExamCost = NumberOfCandidates * 4
+         
           bulk_list = list()
-        
           x = uuid.uuid4().hex.upper()
           b=0
           genid=x[15:20]
+          j = parse_date("2022-1-12")   
+          print(ClosingDate)
+        #   lr =   LateRegistration.objects.filter(ClosingDate="2022-09-30")
+        #   j=parse_date(lr)
+          if date.today()  >  ClosingDate and  (CurrentSchoolName !="PAID")  :
+                print(datetime.date.today())
+
+                return Response({'detail': 'your request is late, u will be paying a 30 percent  increase'},status=status.HTTP_400_BAD_REQUEST)
+          if date.today() < ClosingDate or CurrentSchoolName == "PAID" :
          
-          for _ in range(NumberOfCandidates):
+           for _ in range(NumberOfCandidates):
             trnsref=genid
             pinum = uuid.uuid4().hex.upper()[15:20]
             bulk_list.append(
-                ModelCollege( PayerName = PayerName, SchoolId=SchoolId, LgaId =  LgaId, ChoiceSchoolName =ChoiceSchoolName , Payeremail=Payeremail,Payerphone=Payerphone, trnsref = trnsref,  ExamCost = ExamCost, pinum = pinum , CurrentSchoolName=CurrentSchoolName ))
-
+                ModelCollege( PayerName = PayerName,NumberOfCandidates = NumberOfCandidates, ClosingDate = ClosingDate ,CurrentSchoolName =  CurrentSchoolName,SchoolId=SchoolId, LgaId =  LgaId,Payerphone=Payerphone, trnsref = trnsref,  ExamCost = ExamCost, pinum = pinum  ))
+          
+                
           
 
           query = ModelCollege.objects.bulk_create(bulk_list)
@@ -112,6 +128,48 @@ class BeceViewSet(CreateListMixin,viewsets.ModelViewSet):
     queryset = BECE.objects.all()
     serializer_class = BeceSerializers
     lookup_field = 'uniquecode'
+
+class BecesViewSet(viewsets.ModelViewSet):
+
+    queryset = BECE.objects.all()
+    serializer_class = BeceSerializer
+    lookup_field = 'transactionRef'
+
+    @action(detail=False, methods=["POST"])
+    def generateCode(self, request):
+        
+        
+        
+        
+        x = uuid.uuid4().int
+        
+        u = str(x)
+        genx=u[1:4]
+        print(genx)
+        
+        SchoolTypeId= genx
+        Payeremail = request.data.get('Payeremail')
+        CodePrice = request.data.get('CodePrice')
+        LgaId = request.data.get('LgaId')
+        SchoolName = request.data.get('SchoolName')
+        LgaName = request.data.get('LgaName')
+        SchoolId=LgaId +""+SchoolTypeId
+        x = uuid.uuid4().hex.upper()
+        genid=x[15:20]
+        trnsref =genid
+        bulk_list = list()
+       
+        bulk_list.append(
+                BECE(SchoolTypeId=SchoolTypeId,trnsref=trnsref,SchoolId=SchoolId,Payeremail=Payeremail, CodePrice =CodePrice , LgaId=LgaId,  LgaName= LgaName, SchoolName=SchoolName, ))
+
+        
+
+          
+
+        query = BECE.objects.bulk_create(bulk_list)
+        result = core_serializers.serialize('json', query)
+        # result = serializers.serialize('json', query)
+        return HttpResponse(result, content_type='application/json')
 
 class PaymenViewSet(CreateListMixin,viewsets.ModelViewSet):
 
@@ -185,6 +243,13 @@ class Jss3ViewSet(CreateListMixin,viewsets.ModelViewSet):
 def getBeceInfo(request,pk):
     bece = BECE.objects.filter(SchoolId=pk)
     serializer = BeceSerializerd(bece, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+# @permission_classes([IsAuthenticated&IsVendorUser])
+def getLateInfo(request,pk):
+    late = LateRegistration.objects.filter(Mda=pk)
+    serializer = lateregistraionSerializer(late, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
@@ -275,8 +340,8 @@ def PayBeceAnnualCharges(request, pk,pk2):
     # bece.SchoolName = data['SchoolName']
     # bece.LgaName = data['LgaName']
     bece.ClosingDate = parse_date(data['ClosingDate'])
-    bece.LgaId = data['LgaId']
-    bece.SchoolTypeId =data['SchoolTypeId']
+    # bece.LgaId = data['LgaId']
+    # bece.SchoolTypeId =['SchoolTypeId']
 
     # bece.SchoolType = data['SchoolType']
     bece.TotalPrice  = data['TotalPrice']
