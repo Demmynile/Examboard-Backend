@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
 from portal.views import PortaltViewSet
-from portal.api.bece_views import BeceViewSet,BecesViewSet,getLateInfo,PaymenViewSet,getAllsBeceInfo,getBecePin,PayJss3Quota,getTypeJss3Info,PayBeceAnnualCharges,getTypeBeceInfo,CustomAuthToken,PayBeceQuota,PayPublicService,getPserviceInfo,getBeceInfo,PublicServiceViewSet,PayBece,getShoppedPin,Jss3ViewSet,getJss3Info,PayJss,UpdatePayBece,PayBecePrivate,MCViewSet,PayJSSPrivate,PayBeceAdmin,PayJssAdmin
+from portal.api.bece_views import BeceViewSet,BecesViewSet,LateRegViewSet,getLateInfo,PayJSSLateCharges,PaymenViewSet,getAllsBeceInfo,getBecePin,PayJss3Quota,getTypeJss3Info,PayBeceAnnualCharges,getTypeBeceInfo,CustomAuthToken,PayBeceQuota,PayPublicService,getPserviceInfo,getBeceInfo,PublicServiceViewSet,PayBece,getShoppedPin,Jss3ViewSet,getJss3Info,PayJss,UpdatePayBece,PayBecePrivate,MCViewSet,PayJSSPrivate,PayBeceAdmin,PayJssAdmin
 from payment.views import PaymentViewSet
 # from portal.views import BeceViewSet
 
@@ -28,6 +28,7 @@ router = DefaultRouter()
 router.register(r'portals', PortaltViewSet)
 router.register(r'payment', PaymentViewSet)
 router.register(r'bece' ,  BeceViewSet)
+router.register(r'late' ,  LateRegViewSet)
 router.register(r'beces' ,  BecesViewSet) # pay for school code
 router.register(r'bece', BeceViewSet) # upload bece data
 router.register(r'jss', Jss3ViewSet) # upload jss data
@@ -63,6 +64,7 @@ urlpatterns = [
     path('updateadminquota/<str:pk>/<str:pk2>/', PayBeceQuota, name ="adjust quota info"),# admin adjust quota and generates unique number
     path('updateadminquotajss/<str:pk>/<str:pk2>/', PayJss3Quota, name ="adjust quota info"),# admin adjust quota and generates unique number
     path('beceannualcharges/<str:pk>/<str:pk2>/', PayBeceAnnualCharges, name ="paybece annual fees"),# pay bece annual fees
+    path('jsslatecharges/<str:pk>/<str:pk2>/',PayJSSLateCharges, name ="paybece annual fees"),# pay bece annual fees
 
     # path('login/',CustomAuthToken, name='auth-token'),
 ]

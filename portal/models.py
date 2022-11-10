@@ -239,8 +239,8 @@ class BECE(models.Model):
     pinum = models.CharField(max_length=500, null=True, blank=True)
     trnsref = models.CharField(max_length=100, null=True, blank=True)
     uniquecode = models.CharField(max_length=100, null=True, blank=True)
-    quota= models.CharField(max_length=100, null=True, blank=True)
-    quota2 = models.CharField(max_length=100, null=True, blank=True)
+    quota= models.IntegerField(null=True, blank=True)
+    quota2 = models.IntegerField(null=True, blank=True)
     
  
     def save(self, *args, **kwargs):

@@ -175,6 +175,10 @@ class PaymenViewSet(CreateListMixin,viewsets.ModelViewSet):
 
     queryset = Payments.objects.all()
     serializer_class = PaymentSerializer
+class LateRegViewSet(CreateListMixin,viewsets.ModelViewSet):
+
+    queryset = LateRegistration.objects.all()
+    serializer_class = lateregistraionSerializer
     # lookup_field = 'uniquecode'
 
 class PublicServiceViewSet(CreateListMixin,viewsets.ModelViewSet):
@@ -324,6 +328,46 @@ def PayBecePrivate(request, pk,pk2):
     bece.save()
     serializer = BeceSerializer(bece, many=False)
     return Response(serializer.data)
+@api_view(['PUT'])
+# @permission_classes([IsAdminUser])
+def PayJSSLateCharges(request, pk,pk2):
+    data = request.data
+    jss = JSS3.objects.filter(SchoolType= pk2,SchoolId=pk).first()
+    # bece.quota = data['quota']
+    # bece.quota2 = data['quota2']
+    
+    
+    # bece.NumberOfCandidates = data['NumberOfCandidates']
+    
+    # bece.adminemail = data['adminemail']
+    # bece.SchoolName = data['SchoolName']
+    # bece.LgaName = data['LgaName']
+    jss.ClosingDate = parse_date(data['ClosingDate'])
+    # bece.LgaId = data['LgaId']
+    # bece.SchoolTypeId =['SchoolTypeId']
+
+    # bece.SchoolType = data['SchoolType']
+    jss.TotalPrice  = data['TotalPrice']
+    jss.Mda  = data['Mda']
+    # bece.pinum = genid
+    if (jss.Mda =='PAID')  and (jss.SchoolType == '0'):
+
+     jss.ClosingDate += timedelta(days=60)
+        
+
+    # #     send_mail(
+    # #     [bece.SchoolName],
+    # #     'attend to this school  above who is paying late for an exam',
+    # #     'obalogun@sterlingtech.com.ng',
+    # #     [bece.adminemail],
+    # #     fail_silently=False,
+    # #    )
+    #  return Response({'detail': ' your payment is successful '},status=status.HTTP_200_OK)
+    
+        # bece.pinum = genid
+    jss.save()
+    serializer = BeceSerializer(jss, many=False)
+    return Response(serializer.data)
 
 @api_view(['PUT'])
 # @permission_classes([IsAdminUser])
@@ -398,6 +442,7 @@ def PayPublicService(request, pk):
     # ps.pinum = "09876"
     
     ps.adminemail = data['adminemail']
+    ps.CurrentSchoolName = data['CurrentSchoolName']
     ps.ExamType= data['ExamType']
     ps.candidateemail = data['candidateemail']
 
@@ -412,7 +457,12 @@ def PayPublicService(request, pk):
     
     # if(bece.quota2 <= bece.quota):
         # bece.pinum = genid
-    ps.save()
+    if date.today()  >  ps.ClosingDate and  (ps.CurrentSchoolName !="PAID")  :
+                print(datetime.date.today())
+
+                return Response({'detail': 'your request is late, u will be paying a 30 percent  increase'},status=status.HTTP_400_BAD_REQUEST)
+    if date.today() < ps.ClosingDate or ps.CurrentSchoolName == "PAID" :
+     ps.save()
     serializer = PBSerializer(ps, many=False)
     return Response(serializer.data)
 
@@ -701,18 +751,32 @@ def UpdatePayBece(request, pk):
     
     bece.adminemail = data['adminemail']
     bece.SchoolName = data['SchoolName']
-    bece.LgaName = data['LgaName']
-    bece.NumberOfCandidates +=data['NumberOfCandidates']
-
-
     bece.SchoolType = data['SchoolType']
+    bece.LgaName = data['LgaName']
     bece.Payeremail = data['Payeremail']
     bece.PayerName = data['PayerName']
+    
+    if bece.SchoolType == "0" :
+
+     bece.NumberOfCandidates +=data['NumberOfCandidates']
+    
+    if bece.SchoolType == "1" and bece.quota2 > bece.quota :
+
+      return Response({'detail': 'you cant pay more than this quota'},status=status.HTTP_400_BAD_REQUEST)
+    if bece.SchoolType == "1" and bece.quota2 <= bece.quota :
+    
+     bece.quota2 +=data['quota2']
+    
+       
+
+      
+    
+    
     # if(bece.quota2 <= bece.quota):
         # bece.pinum = genid
-    bece.save()
-    serializer = BeceSerializer(bece, many=False)
-    return Response(serializer.data)
+     bece.save()
+     serializer = BeceSerializer(bece, many=False)
+     return Response(serializer.data)
        
     # elif(bece.quota2 > bece.quota):
 
